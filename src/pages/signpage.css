@@ -1,0 +1,45 @@
+a {
+    text-decoration: none;
+    color: #eeeef0;
+  }
+.sign-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.sign-header {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 60px;
+    width: 100vw;
+    background-color: #3b3b4f;
+    color: #eeeef0;
+    gap: 5px;
+    padding-bottom: 5px;
+}
+.sign-header-elem {
+    width: 140px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+.sign-header-elem:first-of-type {
+    border-bottom: 2px #eeeef0 solid;
+}
+.sign-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+    padding: 0px 20px;
+    text-align: center;
+    gap: 5px;
+}
+
+.sign-text-reset {
+    margin-top: 10px;
+    color: #d92626;
+    cursor: pointer;
+}
