@@ -4,8 +4,11 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 export const ThemeContext = createContext({
   toggleColorMode: (): void => {}
 })
+interface IProps {
+  children: React.ReactNode
+}
 
-const ColorMode = ({ children }: any) => {
+const ColorMode = ({ children }: IProps) => {
   const [mode, setMode] = React.useState<'light' | 'dark'>('light')
   const colorMode = React.useMemo(
     () => ({

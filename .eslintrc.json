@@ -1,7 +1,8 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "node": true
     },
     "extends": [
         "plugin:@typescript-eslint/recommended",
@@ -30,7 +31,21 @@
         "require-jsdoc": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/ban-types": "off",
-        "prettier/prettier": ["warn", { "singleQuote": true }],
-        "@typescript-eslint/no-empty-function": ["warn", { "allow": ["functions", "methods"] }]
+        "prettier/prettier": [
+            "warn",
+            {
+                "singleQuote": true
+            }
+        ],
+        "@typescript-eslint/no-empty-function": [
+            "off",
+            {
+                "allow": [
+                    "functions",
+                    "methods"
+                ]
+            }
+        ],
+        "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
     }
 }

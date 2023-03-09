@@ -21,10 +21,10 @@ export type ColorPickerProps = React.DetailedHTMLProps<
 > & {
   lineColor: string
   handlePick?: () => void
-  handleChangeColor: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleChangeColor: (_event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export type ErrorProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
   error: boolean
-  setError: (error: boolean) => void
+  setError: Dispatch<SetStateAction<boolean>>
 }

@@ -8,12 +8,14 @@ import { auth } from '../sources/firebase'
 
 import './signpage.css'
 import AlertMessage from '../components/AlertMessage'
+import Loader from '../components/Loader'
 
 const SignUpPage = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<boolean>(false)
   const [pswrdVisibility, setPswrdVisibility] = useState<boolean>(false)
+  const [loader, setLoader] = useState<boolean>(false)
 
   const navigate = useNavigate()
   useEffect(() => {
@@ -36,11 +38,18 @@ const SignUpPage = () => {
     setError(false)
   }
   const handleSignIn = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        navigate('/homepage')
-      })
-      .catch(() => setError(true))
+    setLoader(true)
+    setTimeout(() => {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          navigate('/homepage')
+          setLoader(false)
+        })
+        .catch(() => {
+          setError(true)
+          setLoader(false)
+        })
+    }, 1500)
   }
 
   return (
@@ -55,55 +64,51 @@ const SignUpPage = () => {
           </Link>
         </div>
       </div>
-      <div className='sign-content'>
-        <Typography variant='h3'>Welcome Back</Typography>
-        <Typography variant='h6'>Hello Again! Sign up to continue!</Typography>
-        <TextField
-          sx={{ width: '300px' }}
-          margin={'dense'}
-          size='small'
-          type={'email'}
-          required
-          label='Email'
-          onChange={onchangeEmail}
-          value={email}
-        />
-        <TextField
-          sx={{ width: '300px' }}
-          margin='normal'
-          size='small'
-          label='Password'
-          type={pswrdVisibility ? 'text' : 'password'}
-          required
-          value={password}
-          onChange={onchangePassword}
-        />
-        <div style={{ display: 'flex' }}>
-          <Checkbox
+      {loader ? (
+        <Loader />
+      ) : (
+        <div className='sign-content'>
+          <Typography variant='h3'>Welcome Back</Typography>
+          <Typography variant='h6'>Hello Again! Sign up to continue!</Typography>
+          <TextField
+            sx={{ width: '300px' }}
+            margin={'dense'}
             size='small'
-            checked={pswrdVisibility}
-            onChange={() => setPswrdVisibility(!pswrdVisibility)}
+            type={'email'}
+            required
+            label='Email'
+            onChange={onchangeEmail}
+            value={email}
           />
-          <Typography variant='subtitle2' sx={{ marginTop: '10px' }}>
-            Show Password
+          <TextField
+            sx={{ width: '300px' }}
+            margin='normal'
+            size='small'
+            label='Password'
+            type={pswrdVisibility ? 'text' : 'password'}
+            required
+            value={password}
+            onChange={onchangePassword}
+          />
+          <div style={{ display: 'flex' }}>
+            <Checkbox
+              size='small'
+              checked={pswrdVisibility}
+              onChange={() => setPswrdVisibility(!pswrdVisibility)}
+            />
+            <Typography variant='subtitle2' sx={{ marginTop: '10px' }}>
+              Show Password
+            </Typography>
+          </div>
+          <Button variant='contained' color='error' sx={{ width: '300px' }} onClick={handleSignIn}>
+            SIGN IN
+          </Button>
+          <AlertMessage error={error} setError={setError} />
+          <Typography variant='caption' className='sign-text-reset' onClick={onReset}>
+            RESET PASSWORD
           </Typography>
         </div>
-        <Button variant='contained' color='error' sx={{ width: '300px' }} onClick={handleSignIn}>
-          SIGN IN
-        </Button>
-        <AlertMessage error={error} setError={setError} />
-        {/* {error ? (
-          <Typography
-            variant='subtitle2'
-            sx={{ color: '#d92626', fontSize: '12px' }}
-          >
-            {error}
-          </Typography>
-        ) : null} */}
-        <Typography variant='caption' className='sign-text-reset' onClick={onReset}>
-          RESET PASSWORD
-        </Typography>
-      </div>
+      )}
     </div>
   )
 }

@@ -176,8 +176,8 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
   const handleChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLineColor(event.target.value)
   }
-  const handleChangeWidth = (event: any) => {
-    setLineWidth(event.target.value)
+  const handleChangeWidth = (event: Event, value: number | number[]) => {
+    setLineWidth(value as number)
   }
 
   return (
@@ -205,9 +205,10 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
             <ColorPicker lineColor={lineColor} handleChangeColor={handleChangeColor} />
             <Typography variant='h6'>Width:</Typography>
             <Slider
-              aria-label='lineWidth'
-              valueLabelDisplay='auto'
-              defaultValue={2}
+              // aria-label='lineWidth'
+              // valueLabelDisplay='auto'
+              // defaultValue={2}
+              value={lineWidth}
               step={2}
               onChange={handleChangeWidth}
               marks
