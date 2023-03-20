@@ -76,16 +76,10 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
     }
     setDraw(true)
     if (canvasRef.current) {
-      if (shape === 'rectangle') {
-        if (!canvasOffsetX.current || !canvasOffsetY.current) {
-          return
-        }
-        startX.current = e.clientX - canvasOffsetX.current
-        startY.current = e.clientY - canvasOffsetY.current
-      } else if (shape === 'circle') {
-        if (!canvasOffsetX.current || !canvasOffsetY.current) {
-          return
-        }
+      if (!canvasOffsetX.current || !canvasOffsetY.current) {
+        return
+      }
+      if (shape === 'rectangle' || shape === 'circle') {
         startX.current = e.clientX - canvasOffsetX.current
         startY.current = e.clientY - canvasOffsetY.current
       }
@@ -197,6 +191,7 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           <div className='canvas-options-left'>
             <Typography variant='h6'>Options:</Typography>
             <BrushPicker
+              shape={shape}
               handlePick={() => setShape(null)}
               lineColor={lineColor}
               handleChangeColor={handleChangeColor}
@@ -205,9 +200,8 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
             <ColorPicker lineColor={lineColor} handleChangeColor={handleChangeColor} />
             <Typography variant='h6'>Width:</Typography>
             <Slider
-              // aria-label='lineWidth'
-              // valueLabelDisplay='auto'
-              // defaultValue={2}
+              aria-label='lineWidth'
+              valueLabelDisplay='auto'
               value={lineWidth}
               step={2}
               onChange={handleChangeWidth}
@@ -221,14 +215,26 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
               <Typography variant='h6'>Shapes:</Typography>
               <Paper
                 onClick={drawRectangle}
-                sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '2px 5px',
+                  border: shape === 'rectangle' ? '1px solid black' : '0px'
+                }}
               >
                 <CropSquareIcon />
                 <Typography variant='subtitle1'>Rectangle</Typography>
               </Paper>
               <Paper
                 onClick={drawCircle}
-                sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '2px 5px',
+                  border: shape === 'circle' ? '1px solid black' : '0px'
+                }}
               >
                 <PanoramaFishEyeIcon />
                 <Typography variant='subtitle1'>Circle</Typography>

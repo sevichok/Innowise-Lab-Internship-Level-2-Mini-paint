@@ -20,6 +20,7 @@ export type ColorPickerProps = React.DetailedHTMLProps<
   HTMLElement
 > & {
   lineColor: string
+  shape?: string | null
   handlePick?: () => void
   handleChangeColor: (_event: React.ChangeEvent<HTMLInputElement>) => void
 }

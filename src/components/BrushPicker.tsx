@@ -4,8 +4,20 @@ import { RadioGroup, Radio, FormControlLabel } from '@mui/material'
 
 import { ColorPickerProps } from './canvas-types'
 
-const BrushPicker: React.FC<ColorPickerProps> = ({ lineColor, handleChangeColor, handlePick }) => {
+const BrushPicker: React.FC<ColorPickerProps> = ({
+  lineColor,
+  handleChangeColor,
+  handlePick,
+  shape
+}) => {
   const controlProps = (item: string) => ({
+    checked: lineColor !== 'white' && shape === null,
+    onChange: handleChangeColor,
+    value: item,
+    name: 'color-radio-button-demo',
+    inputProps: { 'aria-label': item }
+  })
+  const controlPropsEraser = (item: string) => ({
     checked: lineColor === item,
     onChange: handleChangeColor,
     value: item,
@@ -23,7 +35,7 @@ const BrushPicker: React.FC<ColorPickerProps> = ({ lineColor, handleChangeColor,
       <FormControlLabel
         value='Eraser'
         onClick={handlePick}
-        control={<Radio color='default' {...controlProps('white')} />}
+        control={<Radio color='default' {...controlPropsEraser('white')} />}
         label='Eraser'
       />
     </RadioGroup>

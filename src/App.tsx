@@ -2,9 +2,9 @@ import React, { Suspense } from 'react'
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Box } from '@mui/material'
-const RegPage = React.lazy(() => import('./pages/RegisterPage'))
-const SignPage = React.lazy(() => import('./pages/SignUpPage'))
-const HomePage = React.lazy(() => import('./pages/Homepage'))
+const RegPage = React.lazy(() => import('./pages/RegistrationPage/Registration'))
+const SignPage = React.lazy(() => import('./pages/SignupPage/Signup'))
+const HomePage = React.lazy(() => import('./pages/Homepage/Home'))
 import Loader from './components/Loader'
 
 function App() {

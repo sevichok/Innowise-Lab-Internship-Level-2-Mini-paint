@@ -17,11 +17,11 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
-import { auth } from '../sources/firebase'
-import Canvas from '../components/Canvas'
-import { ThemeContext } from '../providers/ThemeProvider'
-import { useAppSelector, useAppDispatch, listAllImages } from '../redux/store'
-import ProgressBar from '../components/ProgressBar'
+import { auth } from '../../sources/firebase'
+import Canvas from '../../components/Canvas'
+import { ThemeContext } from '../../providers/ThemeProvider'
+import { useAppSelector, useAppDispatch, listAllImages } from '../../redux/store'
+import ProgressBar from '../../components/ProgressBar'
 
 const modalStyle = {
   position: 'absolute',
@@ -48,6 +48,7 @@ const Homepage: React.FC = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const colorMode = useContext(ThemeContext)
+  const loading = useAppSelector((state) => state.images.loading)
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -108,9 +109,9 @@ const Homepage: React.FC = () => {
           />
         </Box>
       </Modal>
-      {images.length === 0 && <ProgressBar />}
+      {loading && <ProgressBar />}
       <ImageList sx={{ padding: '20px 20px' }} variant='quilted' cols={4} gap={8}>
-        {images.map((url) => {
+        {images.map((url: string) => {
           return (
             <ImageListItem key={url.slice(-7)}>
               <img

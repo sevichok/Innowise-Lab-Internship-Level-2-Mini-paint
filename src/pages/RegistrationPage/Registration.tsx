@@ -1,30 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import './regpage.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 import { Typography, TextField, Button, Checkbox } from '@mui/material'
 
-import { auth } from '../sources/firebase'
+import { auth } from '../../sources/firebase'
+import AlertMessage from '../../components/AlertMessage'
+import Loader from '../../components/Loader'
 
-import './signpage.css'
-import AlertMessage from '../components/AlertMessage'
-import Loader from '../components/Loader'
-
-const SignUpPage = () => {
+const RegisterPage = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<boolean>(false)
   const [pswrdVisibility, setPswrdVisibility] = useState<boolean>(false)
-  const [loader, setLoader] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const navigate = useNavigate()
-  useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        navigate('/homepage')
-      }
-    })
-  }, [navigate])
 
   const onchangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)
@@ -37,39 +29,38 @@ const SignUpPage = () => {
     setEmail('')
     setError(false)
   }
-  const handleSignIn = () => {
-    setLoader(true)
-    setTimeout(() => {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          navigate('/homepage')
-          setLoader(false)
-        })
-        .catch(() => {
-          setError(true)
-          setLoader(false)
-        })
-    }, 1500)
+  const handleCreateUser = () => {
+    setLoading(true)
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        navigate('/homepage')
+      })
+      .catch(() => {
+        setError(true)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   return (
-    <div className='sign-page'>
-      <div className='sign-header'>
-        <div className='sign-header-elem'>
-          <Typography variant='h6'>LOGIN</Typography>
-        </div>
-        <div className='sign-header-elem'>
-          <Link to='/registration'>
-            <Typography variant='h6'>SIGNUP</Typography>
+    <div className='reg-page'>
+      <div className='reg-header'>
+        <div className='reg-header-elem'>
+          <Link to='/'>
+            <Typography variant='h6'>LOGIN</Typography>
           </Link>
         </div>
+        <div className='reg-header-elem'>
+          <Typography variant='h6'>SIGNUP</Typography>
+        </div>
       </div>
-      {loader ? (
+      {loading ? (
         <Loader />
       ) : (
-        <div className='sign-content'>
-          <Typography variant='h3'>Welcome Back</Typography>
-          <Typography variant='h6'>Hello Again! Sign up to continue!</Typography>
+        <div className='reg-content'>
+          <Typography variant='h3'>{"You're Welcome"}</Typography>
+          <Typography variant='h6'>Register to continue!</Typography>
           <TextField
             sx={{ width: '300px' }}
             margin={'dense'}
@@ -100,7 +91,12 @@ const SignUpPage = () => {
               Show Password
             </Typography>
           </div>
-          <Button variant='contained' color='error' sx={{ width: '300px' }} onClick={handleSignIn}>
+          <Button
+            variant='contained'
+            color='error'
+            sx={{ width: '300px' }}
+            onClick={handleCreateUser}
+          >
             SIGN IN
           </Button>
           <AlertMessage error={error} setError={setError} />
@@ -113,4 +109,4 @@ const SignUpPage = () => {
   )
 }
 
-export default SignUpPage
+export default RegisterPage
