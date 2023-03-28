@@ -15,6 +15,7 @@ const RegisterPage = () => {
   const [error, setError] = useState<boolean>(false)
   const [pswrdVisibility, setPswrdVisibility] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
 
   const navigate = useNavigate()
 
@@ -35,7 +36,8 @@ const RegisterPage = () => {
       .then(() => {
         navigate('/homepage')
       })
-      .catch(() => {
+      .catch((err) => {
+        setErrorMessage(err.code)
         setError(true)
       })
       .finally(() => {
@@ -97,9 +99,9 @@ const RegisterPage = () => {
             sx={{ width: '300px' }}
             onClick={handleCreateUser}
           >
-            SIGN IN
+            SIGN UP
           </Button>
-          <AlertMessage error={error} setError={setError} />
+          <AlertMessage error={error} setError={setError} errorMessage={errorMessage} type='reg' />
           <Typography variant='caption' className='sign-text-reset' onClick={onReset}>
             RESET PASSWORD
           </Typography>

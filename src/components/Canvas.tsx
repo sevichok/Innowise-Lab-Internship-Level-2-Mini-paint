@@ -1,19 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { Slider, Button, Stack, Paper, Typography } from '@mui/material'
-
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
-import CropSquareIcon from '@mui/icons-material/CropSquare'
 
 import { storage } from '../sources/firebase'
 
 import { useAppDispatch, addImage } from '../redux/store'
 
-import ColorPicker from './ColorPicker'
-
-import BrushPicker from './BrushPicker'
 import { CanvasProps } from './canvas-types'
+import CanvasOptions from './CanvasOptions'
 
 const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -166,6 +160,9 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
   const drawCircle = (): void => {
     setShape('circle')
   }
+  const brushPick = (): void => {
+    setShape(null)
+  }
 
   const handleChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLineColor(event.target.value)
@@ -187,69 +184,18 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           onMouseUp={finishDrawing}
           ref={canvasRef}
         ></canvas>
-        <div className='canvas-options'>
-          <div className='canvas-options-left'>
-            <Typography variant='h6'>Options:</Typography>
-            <BrushPicker
-              shape={shape}
-              handlePick={() => setShape(null)}
-              lineColor={lineColor}
-              handleChangeColor={handleChangeColor}
-            />
-            <Typography variant='h6'>Colors:</Typography>
-            <ColorPicker lineColor={lineColor} handleChangeColor={handleChangeColor} />
-            <Typography variant='h6'>Width:</Typography>
-            <Slider
-              aria-label='lineWidth'
-              valueLabelDisplay='auto'
-              value={lineWidth}
-              step={2}
-              onChange={handleChangeWidth}
-              marks
-              min={2}
-              max={18}
-            ></Slider>
-          </div>
-          <div className='canvas-options-right'>
-            <Stack direction='column' spacing={2}>
-              <Typography variant='h6'>Shapes:</Typography>
-              <Paper
-                onClick={drawRectangle}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '2px 5px',
-                  border: shape === 'rectangle' ? '1px solid black' : '0px'
-                }}
-              >
-                <CropSquareIcon />
-                <Typography variant='subtitle1'>Rectangle</Typography>
-              </Paper>
-              <Paper
-                onClick={drawCircle}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '2px 5px',
-                  border: shape === 'circle' ? '1px solid black' : '0px'
-                }}
-              >
-                <PanoramaFishEyeIcon />
-                <Typography variant='subtitle1'>Circle</Typography>
-              </Paper>
-            </Stack>
-            <Stack spacing={2}>
-              <Button onClick={clearCanvas} size='small' color='error' variant='contained'>
-                Clear
-              </Button>
-              <Button onClick={saveImage} size='small' color='success' variant='contained'>
-                Upload
-              </Button>
-            </Stack>
-          </div>
-        </div>
+        <CanvasOptions
+          shape={shape}
+          lineColor={lineColor}
+          lineWidth={lineWidth}
+          handleChangeColor={handleChangeColor}
+          handleChangeWidth={handleChangeWidth}
+          drawRectangle={drawRectangle}
+          drawCircle={drawCircle}
+          saveImage={saveImage}
+          clearCanvas={clearCanvas}
+          brushPick={brushPick}
+        />
       </div>
     </div>
   )

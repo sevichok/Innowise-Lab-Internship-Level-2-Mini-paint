@@ -50,15 +50,6 @@ img {
    flex-direction: row;
    box-sizing: border-box;
 }
-.canvas-options-left,
-.canvas-options-right{
-    max-width: 200px;
-    padding: 0px 10px;
-    display: flex;
-    box-sizing: border-box;
-    flex-direction: column;
-    justify-content: space-between;
-}
 .class-font {
     font-family: 'Raleway', sans-serif;
 }

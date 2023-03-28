@@ -16,6 +16,7 @@ const SignUpPage = () => {
   const [error, setError] = useState<boolean>(false)
   const [pswrdVisibility, setPswrdVisibility] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
 
   const navigate = useNavigate()
   useEffect(() => {
@@ -43,7 +44,8 @@ const SignUpPage = () => {
       .then(() => {
         navigate('/homepage')
       })
-      .catch(() => {
+      .catch((err) => {
+        setErrorMessage(err.code)
         setError(true)
       })
       .finally(() => {
@@ -102,7 +104,7 @@ const SignUpPage = () => {
           <Button variant='contained' color='error' sx={{ width: '300px' }} onClick={handleSignIn}>
             SIGN IN
           </Button>
-          <AlertMessage error={error} setError={setError} />
+          <AlertMessage error={error} setError={setError} errorMessage={errorMessage} type='sign' />
           <Typography variant='caption' className='sign-text-reset' onClick={onReset}>
             RESET PASSWORD
           </Typography>
