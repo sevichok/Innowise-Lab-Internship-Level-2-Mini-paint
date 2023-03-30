@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import './regpage.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 
-import { Typography, TextField, Button, Checkbox } from '@mui/material'
+import { Typography, TextField, Button, Checkbox, Container, Box } from '@mui/material'
 
 import { auth } from '../../sources/firebase'
 import AlertMessage from '../../components/AlertMessage'
 import Loader from '../../components/Loader'
+import { ContentStyle, ElemStyle, HeaderStyle, PageStyle } from '../MuiStyles'
 
 const RegisterPage = () => {
   const [email, setEmail] = useState<string>('')
@@ -46,21 +46,23 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className='reg-page'>
-      <div className='reg-header'>
-        <div className='reg-header-elem'>
+    <Container className='reg-page' sx={PageStyle}>
+      <Box className='reg-header' sx={HeaderStyle}>
+        <Box className='reg-header-elem' sx={ElemStyle}>
           <Link to='/'>
             <Typography variant='h6'>LOGIN</Typography>
           </Link>
-        </div>
-        <div className='reg-header-elem'>
-          <Typography variant='h6'>SIGNUP</Typography>
-        </div>
-      </div>
+        </Box>
+        <Box className='reg-header-elem' sx={ElemStyle}>
+          <Typography variant='h6' sx={{ borderBottom: '2px #eeeef0 solid' }}>
+            SIGNUP
+          </Typography>
+        </Box>
+      </Box>
       {loading ? (
         <Loader />
       ) : (
-        <div className='reg-content'>
+        <Box className='reg-content' sx={ContentStyle}>
           <Typography variant='h3'>{"You're Welcome"}</Typography>
           <Typography variant='h6'>Register to continue!</Typography>
           <TextField
@@ -83,7 +85,7 @@ const RegisterPage = () => {
             value={password}
             onChange={onchangePassword}
           />
-          <div style={{ display: 'flex' }}>
+          <Box sx={{ display: 'flex' }}>
             <Checkbox
               size='small'
               checked={pswrdVisibility}
@@ -92,7 +94,7 @@ const RegisterPage = () => {
             <Typography variant='subtitle2' sx={{ marginTop: '10px' }}>
               Show Password
             </Typography>
-          </div>
+          </Box>
           <Button
             variant='contained'
             color='error'
@@ -105,9 +107,9 @@ const RegisterPage = () => {
           <Typography variant='caption' className='sign-text-reset' onClick={onReset}>
             RESET PASSWORD
           </Typography>
-        </div>
+        </Box>
       )}
-    </div>
+    </Container>
   )
 }
 

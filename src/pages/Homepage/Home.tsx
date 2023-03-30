@@ -3,7 +3,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
-import './homepage.css'
 import {
   FormGroup,
   FormControlLabel,
@@ -72,10 +71,33 @@ const Homepage: React.FC = () => {
       navigate('/')
     })
   }
+  const HomepageWrapper = {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    maxWidth: '75%',
+    border: '2px solid crimson',
+    borderRadius: '4px',
+    boxSizing: 'border-box',
+    margin: '10px auto'
+  }
+  const HeaderWrapper = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '10px 20px',
+    borderBottom: '2px solid crimson',
+    boxSizing: 'border-box',
+    width: '100%'
+  }
+  const ImageWrapper = {
+    border: '1px solid black',
+    borderRadius: '10px',
+    backgroundColor: 'white'
+  }
 
   return (
-    <Box className='homepage'>
-      <Box className='homepage-header'>
+    <Box className='homepage' sx={HomepageWrapper}>
+      <Box className='homepage-header' sx={HeaderWrapper}>
         <Box>
           <Typography variant='h4'>INNOWISE MINI-PAINT TASK </Typography>
           <Typography variant='h5'>{welcomeText}</Typography>
@@ -115,6 +137,7 @@ const Homepage: React.FC = () => {
           return (
             <ImageListItem key={url.slice(-7)}>
               <img
+                style={ImageWrapper}
                 src={`${url}?w=164&h=164&fit=crop&auto=format`}
                 srcSet={`${url}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                 alt={url.slice(-7)}

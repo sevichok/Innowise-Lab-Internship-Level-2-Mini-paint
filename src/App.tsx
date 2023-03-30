@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react'
-import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Box } from '@mui/material'
 const RegPage = React.lazy(() => import('./pages/RegistrationPage/Registration'))
@@ -12,6 +11,7 @@ function App() {
     <Box
       sx={{
         display: 'flex',
+        boxSizing: 'border-box',
         width: '100%',
         justifyContent: 'center',
         bgcolor: 'background.default',

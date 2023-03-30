@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-
+import { Container, Box } from '@mui/material'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 import { storage } from '../sources/firebase'
@@ -170,10 +170,23 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
   const handleChangeWidth = (event: Event, value: number | number[]) => {
     setLineWidth(value as number)
   }
+  const CanvasWrapper = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    gap: '10px',
+    boxSizing: 'border-box'
+  }
+  const ModalWrapper = {
+    display: 'flex',
+    justifyContent: 'center',
+    boxSizing: 'border-box'
+  }
 
   return (
-    <div className='canvas-wrapper'>
-      <div className='modal'>
+    <Container sx={CanvasWrapper}>
+      <Box sx={ModalWrapper}>
         <canvas
           id='canvas'
           className='canvas'
@@ -196,8 +209,8 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           clearCanvas={clearCanvas}
           brushPick={brushPick}
         />
-      </div>
-    </div>
+      </Box>
+    </Container>
   )
 }
 
