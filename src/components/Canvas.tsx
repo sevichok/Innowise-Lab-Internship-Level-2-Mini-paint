@@ -102,7 +102,7 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           const newClientY = e.clientY - canvasOffsetY.current
           const rectWidth = newClientX - startX.current
           const rectHeight = newClientY - startY.current
-
+          contextRef.current.lineWidth = 40
           contextRef.current.rect(startX.current, startY.current, 5 + rectWidth, 5 + rectHeight)
         } else if (shape === 'circle') {
           if (
@@ -115,11 +115,11 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           }
           const newClientX = e.clientX - canvasOffsetX.current
           const rectWidth = newClientX - startX.current
-
+          contextRef.current.lineWidth = 40
           contextRef.current.arc(
             startX.current,
             startY.current,
-            10 + Math.abs(rectWidth),
+            20 + Math.abs(rectWidth),
             0,
             2 * Math.PI
           )
@@ -192,6 +192,7 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           className='canvas'
           width={0.5 * width}
           height={0.45 * height}
+          style={{ border: '2px solid black', borderRadius: '5px' }}
           onMouseMove={drawing}
           onMouseDown={startDrawing}
           onMouseUp={finishDrawing}
