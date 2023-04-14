@@ -15,39 +15,24 @@ import {
   Modal
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-
+import { modalStyle, ImageWrapper, HeaderWrapper, HomepageWrapper } from '../MuiStyles'
 import { auth } from '../../sources/firebase'
 import Canvas from '../../components/Canvas'
 import { ThemeContext } from '../../providers/ThemeProvider'
-import { useAppSelector, useAppDispatch, listAllImages } from '../../redux/store'
 import ProgressBar from '../../components/ProgressBar'
-
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  width: 'auto',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.default',
-  color: 'text.primary',
-  border: '2px solid',
-  borderColor: 'text.primary',
-  boxShadow: 24,
-  p: 4
-}
+import { useImagesHook } from '../../redux/useImagesHook'
 
 const Homepage: React.FC = () => {
-  const [activeUser, setActiveUser] = useState<string | null>(null)
+  const [activeUser, setActiveUser] = useState<string | null>('')
   const [openCanvas, setOpenCanvas] = useState<boolean>(false)
+  const [validReq, setValidReq] = useState<boolean>(false)
 
   const welcomeText = `It's Time To Work , ${activeUser}`
 
-  const dispatch = useAppDispatch()
-  const images = useAppSelector((state) => state.images.list)
   const navigate = useNavigate()
   const theme = useTheme()
   const colorMode = useContext(ThemeContext)
-  const loading = useAppSelector((state) => state.images.loading)
+  const { images, loading } = useImagesHook(activeUser, validReq)
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -59,40 +44,10 @@ const Homepage: React.FC = () => {
     })
   }, [navigate])
 
-  useEffect(() => {
-    if (!activeUser) {
-      return
-    }
-    dispatch(listAllImages(activeUser))
-  }, [dispatch, activeUser])
-
   const handleSignOut = () => {
     signOut(auth).then(() => {
       navigate('/')
     })
-  }
-  const HomepageWrapper = {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-    maxWidth: '75%',
-    border: '2px solid crimson',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-    margin: '10px auto'
-  }
-  const HeaderWrapper = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '10px 20px',
-    borderBottom: '2px solid crimson',
-    boxSizing: 'border-box',
-    width: '100%'
-  }
-  const ImageWrapper = {
-    border: '1px solid black',
-    borderRadius: '10px',
-    backgroundColor: 'white'
   }
 
   return (
@@ -126,6 +81,8 @@ const Homepage: React.FC = () => {
           <Canvas
             activeUser={activeUser}
             setClose={setOpenCanvas}
+            validReq={validReq}
+            setValidReq={setValidReq}
             width={0.8 * document.documentElement.clientWidth}
             height={1.2 * document.documentElement.clientHeight}
           />

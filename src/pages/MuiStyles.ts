@@ -35,3 +35,52 @@ export const ElemStyle = {
   justifyContent: 'center',
   cursor: 'pointer'
 }
+export const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  width: 'auto',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.default',
+  color: 'text.primary',
+  border: '2px solid',
+  borderColor: 'text.primary',
+  boxShadow: 24,
+  p: 4
+}
+export const HomepageWrapper = {
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: '100vh',
+  maxWidth: '75%',
+  border: '2px solid crimson',
+  borderRadius: '4px',
+  boxSizing: 'border-box',
+  margin: '10px auto'
+}
+export const HeaderWrapper = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  padding: '10px 20px',
+  borderBottom: '2px solid crimson',
+  boxSizing: 'border-box',
+  width: '100%'
+}
+export const ImageWrapper = {
+  border: '1px solid black',
+  borderRadius: '10px',
+  backgroundColor: 'white'
+}
+export const CanvasWrapper = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'center',
+  gap: '10px',
+  boxSizing: 'border-box'
+}
+export const ModalWrapper = {
+  display: 'flex',
+  justifyContent: 'center',
+  boxSizing: 'border-box'
+}

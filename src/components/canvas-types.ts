@@ -13,6 +13,8 @@ export type CanvasProps = React.DetailedHTMLProps<
   setClose: Dispatch<SetStateAction<boolean>>
   width: number
   height: number
+  validReq: boolean
+  setValidReq: Dispatch<SetStateAction<boolean>>
 }
 
 export type ColorPickerProps = React.DetailedHTMLProps<

@@ -4,15 +4,21 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 import { storage } from '../sources/firebase'
 
-import { useAppDispatch, addImage } from '../redux/store'
-
 import { CanvasProps } from './canvas-types'
 import CanvasOptions from './CanvasOptions'
+import { useImagesHook } from '../redux/useImagesHook'
+import { CanvasWrapper, ModalWrapper } from '../pages/MuiStyles'
 
-const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) => {
+const Canvas: React.FC<CanvasProps> = ({
+  activeUser,
+  setClose,
+  width,
+  height,
+  validReq,
+  setValidReq
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const contextRef = useRef<CanvasRenderingContext2D | null>(null)
-  const dispatch = useAppDispatch()
 
   const [isDraw, setDraw] = useState<boolean>(false)
   const [lineColor, setLineColor] = useState<string>('black')
@@ -43,6 +49,8 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
     canvasOffsetY.current = canvasOffset.top
   }, [lineColor, lineWidth])
 
+  useImagesHook(activeUser, validReq)
+
   const saveImage = (): void => {
     if (!contextRef.current) {
       return
@@ -55,8 +63,12 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
       image.src = URL.createObjectURL(blob)
       const imgRef = ref(storage, `images/${activeUser}/${image.src.slice(-7)}`)
       uploadBytes(imgRef, blob).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => dispatch(addImage(url)))
+        getDownloadURL(snapshot.ref).then((url) => {
+          setValidReq((prev) => !prev)
+          return url
+        })
       })
+
       setTimeout(() => {
         clearCanvas()
         setClose(false)
@@ -169,19 +181,6 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
   }
   const handleChangeWidth = (event: Event, value: number | number[]) => {
     setLineWidth(value as number)
-  }
-  const CanvasWrapper = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    gap: '10px',
-    boxSizing: 'border-box'
-  }
-  const ModalWrapper = {
-    display: 'flex',
-    justifyContent: 'center',
-    boxSizing: 'border-box'
   }
 
   return (
