@@ -23,7 +23,7 @@ import ProgressBar from '../../components/ProgressBar'
 import { useImagesHook } from '../../redux/useImagesHook'
 
 const Homepage: React.FC = () => {
-  const [activeUser, setActiveUser] = useState<string | null>('')
+  const [activeUser, setActiveUser] = useState<string | null>(null)
   const [openCanvas, setOpenCanvas] = useState<boolean>(false)
   const [validReq, setValidReq] = useState<boolean>(false)
 

@@ -11,14 +11,14 @@ export const useImagesHook = (activeUser: string | null, validReq: boolean) => {
     setImages([])
     const imagesListRef = ref(storage, `images/${activeUser}`)
     const response = await listAll(imagesListRef)
-    response.items.forEach((item) => {
-      getDownloadURL(item)
-        .then((value) => {
-          setImages((prev) => prev.concat(value))
-          return value
-        })
-        .finally(() => setLoading(false))
+    const data = response.items.map((item) => {
+      return getDownloadURL(item)
     })
+    Promise.all(data)
+      .then((urls) => {
+        setImages(urls)
+      })
+      .finally(() => setLoading(false))
   }, [activeUser])
 
   useEffect(() => {
