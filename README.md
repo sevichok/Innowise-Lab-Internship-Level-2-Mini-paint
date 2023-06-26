@@ -1,6 +1,4 @@
-# Innowise Lab Internship: Level 2: Mini-Paint
-
-[Task](https://drive.google.com/file/d/19cb4whI_HUVPzuaPyaj5r6hGotIVnhho/view)
+# Mini-Paint
 
 App was created with the help of Firebase Storage architecture, React Redux and Typescript.
 We have a basic routing with Authorization  / Registration pages.
