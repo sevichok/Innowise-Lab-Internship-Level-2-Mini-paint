@@ -3,7 +3,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
-import './homepage.css'
 import {
   FormGroup,
   FormControlLabel,
@@ -16,38 +15,24 @@ import {
   Modal
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-
-import { auth } from '../sources/firebase'
-import Canvas from '../components/Canvas'
-import { ThemeContext } from '../providers/ThemeProvider'
-import { useAppSelector, useAppDispatch, listAllImages } from '../redux/store'
-import ProgressBar from '../components/ProgressBar'
-
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  width: 'auto',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.default',
-  color: 'text.primary',
-  border: '2px solid',
-  borderColor: 'text.primary',
-  boxShadow: 24,
-  p: 4
-}
+import { modalStyle, ImageWrapper, HeaderWrapper, HomepageWrapper } from '../MuiStyles'
+import { auth } from '../../sources/firebase'
+import Canvas from '../../components/Canvas'
+import { ThemeContext } from '../../providers/ThemeProvider'
+import ProgressBar from '../../components/ProgressBar'
+import { useImagesHook } from '../../redux/useImagesHook'
 
 const Homepage: React.FC = () => {
   const [activeUser, setActiveUser] = useState<string | null>(null)
   const [openCanvas, setOpenCanvas] = useState<boolean>(false)
+  const [validReq, setValidReq] = useState<boolean>(false)
 
   const welcomeText = `It's Time To Work , ${activeUser}`
 
-  const dispatch = useAppDispatch()
-  const images = useAppSelector((state) => state.images.list)
   const navigate = useNavigate()
   const theme = useTheme()
   const colorMode = useContext(ThemeContext)
+  const { images, loading } = useImagesHook(activeUser, validReq)
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -59,13 +44,6 @@ const Homepage: React.FC = () => {
     })
   }, [navigate])
 
-  useEffect(() => {
-    if (!activeUser) {
-      return
-    }
-    dispatch(listAllImages(activeUser))
-  }, [dispatch, activeUser])
-
   const handleSignOut = () => {
     signOut(auth).then(() => {
       navigate('/')
@@ -73,8 +51,8 @@ const Homepage: React.FC = () => {
   }
 
   return (
-    <Box className='homepage'>
-      <Box className='homepage-header'>
+    <Box className='homepage' sx={HomepageWrapper}>
+      <Box className='homepage-header' sx={HeaderWrapper}>
         <Box>
           <Typography variant='h4'>INNOWISE MINI-PAINT TASK </Typography>
           <Typography variant='h5'>{welcomeText}</Typography>
@@ -103,17 +81,20 @@ const Homepage: React.FC = () => {
           <Canvas
             activeUser={activeUser}
             setClose={setOpenCanvas}
+            validReq={validReq}
+            setValidReq={setValidReq}
             width={0.8 * document.documentElement.clientWidth}
             height={1.2 * document.documentElement.clientHeight}
           />
         </Box>
       </Modal>
-      {images.length === 0 && <ProgressBar />}
+      {loading && <ProgressBar />}
       <ImageList sx={{ padding: '20px 20px' }} variant='quilted' cols={4} gap={8}>
-        {images.map((url) => {
+        {images.map((url: string) => {
           return (
             <ImageListItem key={url.slice(-7)}>
               <img
+                style={ImageWrapper}
                 src={`${url}?w=164&h=164&fit=crop&auto=format`}
                 srcSet={`${url}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                 alt={url.slice(-7)}

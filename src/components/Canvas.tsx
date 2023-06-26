@@ -1,24 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react'
-
+import { Container, Box } from '@mui/material'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { Slider, Button, Stack, Paper, Typography } from '@mui/material'
-
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
-import CropSquareIcon from '@mui/icons-material/CropSquare'
 
 import { storage } from '../sources/firebase'
 
-import { useAppDispatch, addImage } from '../redux/store'
-
-import ColorPicker from './ColorPicker'
-
-import BrushPicker from './BrushPicker'
 import { CanvasProps } from './canvas-types'
+import CanvasOptions from './CanvasOptions'
+import { useImagesHook } from '../redux/useImagesHook'
+import { CanvasWrapper, ModalWrapper } from '../pages/MuiStyles'
 
-const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) => {
+const Canvas: React.FC<CanvasProps> = ({
+  activeUser,
+  setClose,
+  width,
+  height,
+  validReq,
+  setValidReq
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const contextRef = useRef<CanvasRenderingContext2D | null>(null)
-  const dispatch = useAppDispatch()
 
   const [isDraw, setDraw] = useState<boolean>(false)
   const [lineColor, setLineColor] = useState<string>('black')
@@ -49,6 +49,8 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
     canvasOffsetY.current = canvasOffset.top
   }, [lineColor, lineWidth])
 
+  useImagesHook(activeUser, validReq)
+
   const saveImage = (): void => {
     if (!contextRef.current) {
       return
@@ -61,8 +63,12 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
       image.src = URL.createObjectURL(blob)
       const imgRef = ref(storage, `images/${activeUser}/${image.src.slice(-7)}`)
       uploadBytes(imgRef, blob).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => dispatch(addImage(url)))
+        getDownloadURL(snapshot.ref).then((url) => {
+          setValidReq((prev) => !prev)
+          return url
+        })
       })
+
       setTimeout(() => {
         clearCanvas()
         setClose(false)
@@ -76,16 +82,10 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
     }
     setDraw(true)
     if (canvasRef.current) {
-      if (shape === 'rectangle') {
-        if (!canvasOffsetX.current || !canvasOffsetY.current) {
-          return
-        }
-        startX.current = e.clientX - canvasOffsetX.current
-        startY.current = e.clientY - canvasOffsetY.current
-      } else if (shape === 'circle') {
-        if (!canvasOffsetX.current || !canvasOffsetY.current) {
-          return
-        }
+      if (!canvasOffsetX.current || !canvasOffsetY.current) {
+        return
+      }
+      if (shape === 'rectangle' || shape === 'circle') {
         startX.current = e.clientX - canvasOffsetX.current
         startY.current = e.clientY - canvasOffsetY.current
       }
@@ -114,7 +114,7 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           const newClientY = e.clientY - canvasOffsetY.current
           const rectWidth = newClientX - startX.current
           const rectHeight = newClientY - startY.current
-
+          contextRef.current.lineWidth = 40
           contextRef.current.rect(startX.current, startY.current, 5 + rectWidth, 5 + rectHeight)
         } else if (shape === 'circle') {
           if (
@@ -127,11 +127,11 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
           }
           const newClientX = e.clientX - canvasOffsetX.current
           const rectWidth = newClientX - startX.current
-
+          contextRef.current.lineWidth = 40
           contextRef.current.arc(
             startX.current,
             startY.current,
-            10 + Math.abs(rectWidth),
+            20 + Math.abs(rectWidth),
             0,
             2 * Math.PI
           )
@@ -172,6 +172,9 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
   const drawCircle = (): void => {
     setShape('circle')
   }
+  const brushPick = (): void => {
+    setShape(null)
+  }
 
   const handleChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLineColor(event.target.value)
@@ -181,71 +184,33 @@ const Canvas: React.FC<CanvasProps> = ({ activeUser, setClose, width, height }) 
   }
 
   return (
-    <div className='canvas-wrapper'>
-      <div className='modal'>
+    <Container sx={CanvasWrapper}>
+      <Box sx={ModalWrapper}>
         <canvas
           id='canvas'
           className='canvas'
           width={0.5 * width}
           height={0.45 * height}
+          style={{ border: '2px solid black', borderRadius: '5px' }}
           onMouseMove={drawing}
           onMouseDown={startDrawing}
           onMouseUp={finishDrawing}
           ref={canvasRef}
         ></canvas>
-        <div className='canvas-options'>
-          <div className='canvas-options-left'>
-            <Typography variant='h6'>Options:</Typography>
-            <BrushPicker
-              handlePick={() => setShape(null)}
-              lineColor={lineColor}
-              handleChangeColor={handleChangeColor}
-            />
-            <Typography variant='h6'>Colors:</Typography>
-            <ColorPicker lineColor={lineColor} handleChangeColor={handleChangeColor} />
-            <Typography variant='h6'>Width:</Typography>
-            <Slider
-              // aria-label='lineWidth'
-              // valueLabelDisplay='auto'
-              // defaultValue={2}
-              value={lineWidth}
-              step={2}
-              onChange={handleChangeWidth}
-              marks
-              min={2}
-              max={18}
-            ></Slider>
-          </div>
-          <div className='canvas-options-right'>
-            <Stack direction='column' spacing={2}>
-              <Typography variant='h6'>Shapes:</Typography>
-              <Paper
-                onClick={drawRectangle}
-                sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-              >
-                <CropSquareIcon />
-                <Typography variant='subtitle1'>Rectangle</Typography>
-              </Paper>
-              <Paper
-                onClick={drawCircle}
-                sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-              >
-                <PanoramaFishEyeIcon />
-                <Typography variant='subtitle1'>Circle</Typography>
-              </Paper>
-            </Stack>
-            <Stack spacing={2}>
-              <Button onClick={clearCanvas} size='small' color='error' variant='contained'>
-                Clear
-              </Button>
-              <Button onClick={saveImage} size='small' color='success' variant='contained'>
-                Upload
-              </Button>
-            </Stack>
-          </div>
-        </div>
-      </div>
-    </div>
+        <CanvasOptions
+          shape={shape}
+          lineColor={lineColor}
+          lineWidth={lineWidth}
+          handleChangeColor={handleChangeColor}
+          handleChangeWidth={handleChangeWidth}
+          drawRectangle={drawRectangle}
+          drawCircle={drawCircle}
+          saveImage={saveImage}
+          clearCanvas={clearCanvas}
+          brushPick={brushPick}
+        />
+      </Box>
+    </Container>
   )
 }
 
