@@ -54,7 +54,7 @@ const Homepage: React.FC = () => {
     <Box className='homepage' sx={HomepageWrapper}>
       <Box className='homepage-header' sx={HeaderWrapper}>
         <Box>
-          <Typography variant='h4'>INNOWISE MINI-PAINT TASK </Typography>
+          <Typography variant='h4'>MINI-PAINT TASK </Typography>
           <Typography variant='h5'>{welcomeText}</Typography>
         </Box>
         <FormGroup sx={{ marginLeft: '20px', gap: '10px' }}>
